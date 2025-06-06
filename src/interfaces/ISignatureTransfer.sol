@@ -131,4 +131,16 @@ interface ISignatureTransfer is IEIP712 {
     /// @param wordPos A number to index the nonceBitmap at
     /// @param mask A bitmap masked against msg.sender's current bitmap at the word position
     function invalidateUnorderedNonces(uint256 wordPos, uint256 mask) external;
+
+    /// @notice Batch transfer: transfers tokens using multiple single-token permits and provided transfer details
+    /// @param permits Array of single-token permits
+    /// @param transferDetails Array of transfer details corresponding to each permit
+    /// @param owners Array of token owners (one per permit)
+    /// @param signatures Array of signatures (one per permit)
+    function batchPermitTransferFrom(
+        PermitTransferFrom[] calldata permits,
+        SignatureTransferDetails[] calldata transferDetails,
+        address[] calldata owners,
+        bytes[] calldata signatures
+    ) external;
 }

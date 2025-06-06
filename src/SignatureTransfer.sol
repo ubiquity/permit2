@@ -154,4 +154,25 @@ contract SignatureTransfer is ISignatureTransfer, EIP712 {
 
         if (flipped & bit == 0) revert InvalidNonce();
     }
+
+    /// @inheritdoc ISignatureTransfer
+    /// @notice Batch transfer: transfers tokens using multiple single-token permits and provided transfer details
+    function batchPermitTransferFrom(
+        PermitTransferFrom[] calldata permits,
+        SignatureTransferDetails[] calldata transferDetails,
+        address[] calldata owners,
+        bytes[] calldata signatures
+    ) external {
+        uint256 length = permits.length;
+        if (length != transferDetails.length || length != owners.length || length != signatures.length) revert LengthMismatch();
+        for (uint256 i = 0; i < length; ++i) {
+            _permitTransferFrom(
+                permits[i],
+                transferDetails[i],
+                owners[i],
+                permits[i].hash(),
+                signatures[i]
+            );
+        }
+    }
 }
